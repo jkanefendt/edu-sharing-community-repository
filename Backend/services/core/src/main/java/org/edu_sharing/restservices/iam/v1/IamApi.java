@@ -134,6 +134,7 @@ public class IamApi  {
     public Response getUser(
     		@Parameter(description = "ID of repository (or \"-home-\" for home repository)", required = true, schema = @Schema(defaultValue="-home-" )) @PathParam("repository") String repository,
     		@Parameter(description = "username (or \"-me-\" for current user)", required = true, schema = @Schema(defaultValue="-me-" )) @PathParam("person") String person,
+    		@Parameter(description = "Whether to include user groups in response" ,required=false )@QueryParam("groups") boolean includeGroups,
     		@Context HttpServletRequest req) {
 
     	try {
@@ -143,6 +144,10 @@ public class IamApi  {
 	    	
 	    	UserEntry response = new UserEntry();
 	    	response.setPerson(personDao.asPerson());
+
+			if (includeGroups) {
+				response.setGroups(personDao.getGroups());
+            }
 
 	    	org.edu_sharing.alfresco.repository.server.authentication.Context context =  org.edu_sharing.alfresco.repository.server.authentication.Context.getCurrentInstance();
 	    String username = context.getSessionAttribute(CCConstants.AUTH_USERNAME);

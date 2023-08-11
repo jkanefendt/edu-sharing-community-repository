@@ -252,6 +252,22 @@ public class PersonDao {
 		return response;
 	}
 
+	public Collection<String> getGroups() throws DAOException{
+		if (!AuthenticationUtil.getFullyAuthenticatedUser().equals(getAuthorityName()) && !AuthorityServiceFactory.getLocalService().isGlobalAdmin()) {
+			throw new NotAnAdminException();
+		}
+		SearchResult<String> search=SearchServiceFactory.getSearchService(repoDao.getId()).searchPersonGroups(
+				getAuthorityName(),
+				null,
+				0,
+				Integer.MAX_VALUE,
+				null
+
+		);
+		return search.getData();
+	}
+
+
 	public void changePassword(String oldPassword, String newPassword) throws DAOException {
 
 		try {
